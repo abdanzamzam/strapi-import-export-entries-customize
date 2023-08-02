@@ -1,6 +1,6 @@
 # Strapi Plugin Import Export Entries
 
-Import/Export data from and to your database in just few clicks. Customization plugin to import base64 using CSV.
+Import/Export data from and to your database in just few clicks. Customization plugin for import base64 using CSV for special needs.
 
 <p align="center">
   <img src="./doc/logo.png" alt="UI" width="300"/>
