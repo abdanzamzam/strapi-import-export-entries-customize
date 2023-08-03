@@ -26,25 +26,36 @@ type FileEntryMedia = {
 };
 
 async function findOrImportFile(fileEntry: FileEntry, user: User, { allowedFileTypes }: { allowedFileTypes: AllowedMediaTypes[] }): Promise<Entry | null> {
-  let obj: Partial<FileEntryMedia> = {};
-  if (typeof fileEntry === 'number') {
-    obj.id = fileEntry;
-  } else if (typeof fileEntry === 'string') {
-    obj.url = fileEntry;
-  } else if (isObjectSafe(fileEntry)) {
-    obj = fileEntry;
+  if (isBase64Data(fileEntry)) {
+    let file = null;
+    file = await importFileBase64(fileEntry, user);
+    return file;
   } else {
-    throw new Error(`Invalid data format '${typeof fileEntry}' to import media. Only 'string', 'number', 'object' are accepted.`);
+    let obj: Partial<FileEntryMedia> = {};
+    if (typeof fileEntry === 'number') {
+      obj.id = fileEntry;
+    } else if (typeof fileEntry === 'string') {
+      obj.url = fileEntry;
+    } else if (isObjectSafe(fileEntry)) {
+      obj = fileEntry;
+    } else {
+      throw new Error(`Invalid data format '${typeof fileEntry}' to import media. Only 'string', 'number', 'object' are accepted.`);
+    }
+
+    let file: MediaEntry | null = await findFile(obj, user, allowedFileTypes);
+
+    if (file && !isExtensionAllowed(file.ext.substring(1), allowedFileTypes)) {
+      file = null;
+    }
+
+    return file;
   }
-
-  let file: MediaEntry | null = await findFile(obj, user, allowedFileTypes);
-
-  if (file && !isExtensionAllowed(file.ext.substring(1), allowedFileTypes)) {
-    file = null;
-  }
-
-  return file;
 }
+
+const isBase64Data = (fileEntry: any) => {
+  const base64RegExp = /^data:([a-z]+\/[a-z]+);base64,([a-zA-Z0-9+/=]+)$/;
+  return base64RegExp.test(fileEntry);
+};
 
 const findFile = async (
   { id, hash, name, url, alternativeText, caption }: Partial<FileEntryMedia>,
@@ -124,6 +135,51 @@ const importFile = async (
   }
 };
 
+const importFileBase64 = async (base64Data: any, user: User): Promise<MediaEntry> => {
+  let file;
+  try {
+    file = await writeFileBase64(base64Data);
+
+    let [uploadedFile] = await strapi
+      .plugin('upload')
+      .service('upload')
+      .upload(
+        {
+          files: {
+            name: file.name,
+            type: 'image/' + file.type,
+            size: file.size,
+            path: file.path,
+          },
+          data: {
+            fileInfo: {
+              name: file.name,
+              alternativeText: '',
+              caption: '',
+            },
+          },
+        },
+        { user },
+      );
+
+    // if (id) {
+    //   uploadedFile = await strapi.db.query('plugin::upload.file').update({
+    //     where: { id: uploadedFile.id },
+    //     data: { id },
+    //   });
+    // }
+
+    return uploadedFile;
+  } catch (err) {
+    strapi.log.error(err);
+    throw err;
+  } finally {
+    if (file?.path) {
+      deleteFileIfExists(file?.path);
+    }
+  }
+};
+
 const fetchFile = async (
   url: string,
 ): Promise<{
@@ -161,6 +217,41 @@ const writeFile = async (name: string, content: Buffer): Promise<string> => {
     strapi.log.error(err);
     throw err;
   }
+};
+
+const writeFileBase64 = async (base64Data: string): Promise<any> => {
+  const filename = 'avanza-white-(23)_optimized.png';
+  const base64Image = base64Data.split(',')[1];
+  const content = Buffer.from(base64Image, 'base64');
+  const fileInfo = getFileInfoFromBase64Image(base64Data, filename);
+  const tmpWorkingDirectory = await fse.mkdtemp(path.join(os.tmpdir(), 'strapi-upload-'));
+
+  const filePath = path.join(tmpWorkingDirectory, filename);
+  try {
+    fs.writeFileSync(filePath, content);
+    return {
+      name: filename,
+      type: fileInfo.type,
+      size: fileInfo.size,
+      path: filePath,
+    };
+  } catch (err) {
+    strapi.log.error(err);
+    throw err;
+  }
+};
+
+const getFileInfoFromBase64Image = (base64Data: string, filename: string) => {
+  const bufferData = Buffer.from(base64Data, 'base64');
+  const typeMatches = base64Data.match(/^data:image\/([^;]+);base64,(.*)$/);
+  const fileType = typeMatches ? typeMatches[1] : 'unknown';
+  const fileSize = bufferData.length;
+
+  return {
+    name: filename,
+    type: fileType,
+    size: fileSize,
+  };
 };
 
 const deleteFileIfExists = (filePath: string): void => {
