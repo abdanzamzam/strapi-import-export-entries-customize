@@ -11,23 +11,23 @@ Official plugin https://www.npmjs.com/package/strapi-plugin-import-export-entrie
 ## Features Customization (Import Base64 Images CSV)
 
 <p align="center">
-  <img src="./doc/1.jpg" alt="UI" width="300"/>
+  <img src="./doc/1.jpg" alt="UI" width="500"/>
 </p>
 
 <p align="center">
-  <img src="./doc/2.jpg" alt="UI" width="300"/>
+  <img src="./doc/2.jpg" alt="UI" width="500"/>
 </p>
 
 <p align="center">
-  <img src="./doc/3.jpg" alt="UI" width="300"/>
+  <img src="./doc/3.jpg" alt="UI" width="500"/>
 </p>
 
 <p align="center">
-  <img src="./doc/4.jpg" alt="UI" width="300"/>
+  <img src="./doc/4.jpg" alt="UI" width="500"/>
 </p>
 
 <p align="center">
-  <img src="./doc/5.jpg" alt="UI" width="300"/>
+  <img src="./doc/5.jpg" alt="UI" width="500"/>
 </p>
 
 ## Features Default
