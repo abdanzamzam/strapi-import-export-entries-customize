@@ -1,4 +1,4 @@
-# Strapi Plugin Import Export Entries
+# Strapi Plugin Import Export Entries (Customization)
 
 Import/Export data from and to your database in just few clicks. Customization plugin for import base64 images using CSV for special needs. Official plugin https://www.npmjs.com/package/strapi-plugin-import-export-entries
 
