@@ -1,6 +1,6 @@
 {
   "name": "strapi-import-export-entries-customize",
-  "version": "v1.0.8",
+  "version": "v1.0.10",
   "description": "Import/Export data from and to your database in just few clicks. Customization plugin to import base64 images using CSV for special needs.",
   "strapi": {
     "name": "import-export-entries",

@@ -682,7 +682,7 @@ Baboo - [@Baboo7](https://github.com/Baboo7)
 
 ## Maintainer
 
-Abdan Zam Zam Ramadhan - [@Baboo7](https://github.com/abdanzamzam)
+Abdan Zam Zam Ramadhan - [@abdanzamzam](https://github.com/abdanzamzam)
 
 ## Acknowledgments
 
