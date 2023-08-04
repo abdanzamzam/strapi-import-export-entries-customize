@@ -94,13 +94,13 @@ See the repo [Strapi Contribute](https://github.com/Baboo7/strapi-contribute#rea
 1. Download
 
 ```
-yarn add strapi-plugin-import-export-entries
+yarn add strapi-import-export-entries-customize
 ```
 
 or
 
 ```
-npm i strapi-plugin-import-export-entries
+npm i strapi-import-export-entries-customize
 ```
 
 2. Enable the plugin
