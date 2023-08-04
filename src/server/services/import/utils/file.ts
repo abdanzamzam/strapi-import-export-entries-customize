@@ -147,7 +147,7 @@ const importFileBase64 = async (base64Data: any, user: User): Promise<MediaEntry
         {
           files: {
             name: file.name,
-            type: 'image/' + file.type,
+            type: file.type,
             size: file.size,
             path: file.path,
           },
@@ -220,7 +220,10 @@ const writeFile = async (name: string, content: Buffer): Promise<string> => {
 };
 
 const writeFileBase64 = async (base64Data: string): Promise<any> => {
-  const filename = 'avanza-white-(23)_optimized.png';
+  const dataURIComponents = base64Data.split(';');
+  const mimeType = dataURIComponents[0].split(':')[1];
+  const imageExtension = mimeType.split('/')[1];
+  const filename = `image-${Date.now()}.${imageExtension}`;
   const base64Image = base64Data.split(',')[1];
   const content = Buffer.from(base64Image, 'base64');
   const fileInfo = getFileInfoFromBase64Image(base64Data, filename);
@@ -231,7 +234,7 @@ const writeFileBase64 = async (base64Data: string): Promise<any> => {
     fs.writeFileSync(filePath, content);
     return {
       name: filename,
-      type: fileInfo.type,
+      type: mimeType,
       size: fileInfo.size,
       path: filePath,
     };
@@ -243,14 +246,11 @@ const writeFileBase64 = async (base64Data: string): Promise<any> => {
 
 const getFileInfoFromBase64Image = (base64Data: string, filename: string) => {
   const bufferData = Buffer.from(base64Data, 'base64');
-  const typeMatches = base64Data.match(/^data:image\/([^;]+);base64,(.*)$/);
-  const fileType = typeMatches ? typeMatches[1] : 'unknown';
   const fileSize = bufferData.length;
 
   return {
     name: filename,
-    type: fileType,
-    size: fileSize,
+    size: fileSize
   };
 };
 
