@@ -658,6 +658,10 @@ The media is treated as an id.
 
 Baboo - [@Baboo7](https://github.com/Baboo7)
 
+## Maintainer
+
+Abdan Zam Zam Ramadhan - [@Baboo7](https://github.com/abdanzamzam)
+
 ## Acknowledgments
 
 This plugin (and especially this README) took strong inspiration from the [strapi-plugin-import-export-content](https://github.com/EdisonPeM/strapi-plugin-import-export-content#readme) from [EdisonPeM](https://github.com/EdisonPeM).
